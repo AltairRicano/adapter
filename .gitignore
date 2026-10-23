@@ -1,5 +1,11 @@
-# Binaries & build artifacts
-adapter_demo
+# Artefactos operativos (no son producto)
+CLAUDE.md
+SKILLS.md
+agentes/
+
+# Compilación y caché
+build/
 *.o
-*.a
-*.so
+*.out
+__pycache__/
+*.pyc
