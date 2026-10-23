@@ -7,51 +7,53 @@ Las firmas están en notación C++; la versión Python es equivalente (`snake_ca
 classDiagram
     direction LR
 
-    namespace Modulo_Pagos_NO_SE_TOCA {
-        class Payment {
-            +string name
-            +long amountCents
-        }
-        class LegacyPaymentGateway {
-            +fetchPayments() vector~Payment~
-        }
+    class Payment {
+        +string name
+        +long amountCents
+    }
+    class LegacyPaymentGateway {
+        +fetchPayments() vector~Payment~
     }
 
-    namespace Modulo_Facturacion_NO_SE_TOCA {
-        class Invoice {
-            +string name
-            +double amount
-            +string issuedOn
-        }
-        class InvoiceSource {
-            <<interface>>
-            +listInvoices() vector~Invoice~
-        }
-        class InvoiceReport {
-            -InvoiceSource source
-            +total() double
-            +print(ostream)
-        }
+    class Invoice {
+        +string name
+        +double amount
+        +string issuedOn
+    }
+    class InvoiceSource {
+        <<interface>>
+        +listInvoices() vector~Invoice~
+    }
+    class InvoiceReport {
+        -InvoiceSource source
+        +total() double
+        +print(ostream)
     }
 
-    namespace Adapter_CODIGO_NUEVO {
-        class Clock {
-            <<interface>>
-            +today() string
-        }
-        class SystemClock
-        class FixedClock
-        class PaymentInvoiceAdapter {
-            -LegacyPaymentGateway gateway
-            -Clock clock
-            +listInvoices() vector~Invoice~
-        }
+    class Clock {
+        <<interface>>
+        +today() string
     }
+    class SystemClock {
+        +today() string
+    }
+    class FixedClock {
+        -string date
+        +today() string
+    }
+    class PaymentInvoiceAdapter {
+        -LegacyPaymentGateway gateway
+        -Clock clock
+        +listInvoices() vector~Invoice~
+    }
+
+    note for LegacyPaymentGateway "MÓDULO PAGOS: no se toca"
+    note for InvoiceSource "MÓDULO FACTURACIÓN: no se toca"
+    note for PaymentInvoiceAdapter "CÓDIGO NUEVO: el adapter"
 
     LegacyPaymentGateway ..> Payment : devuelve
     InvoiceSource ..> Invoice : devuelve
     InvoiceReport o--> InvoiceSource : usa (Client)
-
     PaymentInvoiceAdapter ..|> InvoiceSource : implementa (Target)
     PaymentInvoiceAdapter o--> LegacyPaymentGateway : envuelve (Adaptee)
     PaymentInvoiceAdapter o--> Clock : fecha

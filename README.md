@@ -25,18 +25,64 @@ alimentarlo con los pagos heredados se escribe `PaymentInvoiceAdapter`, que impl
 | Adaptee | `payments/LegacyPaymentGateway.*` | `payments/legacy_payment_gateway.py` |
 | **Adapter** | `adapter/PaymentInvoiceAdapter.hpp` + `Clock.hpp` | `adapter/payment_invoice_adapter.py` |
 
-Diagrama de clases completo: [`docs/diagrama_clases.md`](docs/diagrama_clases.md).
+Diagrama de clases completo (con una tabla de lo que traduce el adapter): [`docs/diagrama_clases.md`](docs/diagrama_clases.md).
 
 ```mermaid
 classDiagram
     direction LR
-    class InvoiceReport
-    class InvoiceSource { <<interface>> }
-    class PaymentInvoiceAdapter
-    class LegacyPaymentGateway
-    InvoiceReport o--> InvoiceSource
-    PaymentInvoiceAdapter ..|> InvoiceSource
-    PaymentInvoiceAdapter o--> LegacyPaymentGateway
+
+    class Payment {
+        +string name
+        +long amountCents
+    }
+    class LegacyPaymentGateway {
+        +fetchPayments() vector~Payment~
+    }
+
+    class Invoice {
+        +string name
+        +double amount
+        +string issuedOn
+    }
+    class InvoiceSource {
+        <<interface>>
+        +listInvoices() vector~Invoice~
+    }
+    class InvoiceReport {
+        -InvoiceSource source
+        +total() double
+        +print(ostream)
+    }
+
+    class Clock {
+        <<interface>>
+        +today() string
+    }
+    class SystemClock {
+        +today() string
+    }
+    class FixedClock {
+        -string date
+        +today() string
+    }
+    class PaymentInvoiceAdapter {
+        -LegacyPaymentGateway gateway
+        -Clock clock
+        +listInvoices() vector~Invoice~
+    }
+
+    note for LegacyPaymentGateway "MÓDULO PAGOS: no se toca"
+    note for InvoiceSource "MÓDULO FACTURACIÓN: no se toca"
+    note for PaymentInvoiceAdapter "CÓDIGO NUEVO: el adapter"
+
+    LegacyPaymentGateway ..> Payment : devuelve
+    InvoiceSource ..> Invoice : devuelve
+    InvoiceReport o--> InvoiceSource : usa (Client)
+    PaymentInvoiceAdapter ..|> InvoiceSource : implementa (Target)
+    PaymentInvoiceAdapter o--> LegacyPaymentGateway : envuelve (Adaptee)
+    PaymentInvoiceAdapter o--> Clock : fecha
+    SystemClock ..|> Clock
+    FixedClock ..|> Clock
 ```
 
 ## Estructura de carpetas
