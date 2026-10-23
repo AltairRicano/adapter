@@ -85,6 +85,17 @@ classDiagram
     FixedClock ..|> Clock
 ```
 
+## Origen del patrón
+
+Adapter fue catalogado por la "Banda de los Cuatro" (*Gang of Four*, GoF) en el libro
+*Design Patterns: Elements of Reusable Object-Oriented Software* (Addison-Wesley, 1994).
+Es uno de sus 7 patrones estructurales y también se conoce como *Wrapper*.
+
+- Erich Gamma
+- Richard Helm
+- Ralph Johnson
+- John Vlissides
+
 ## Estructura de carpetas
 
 ```
