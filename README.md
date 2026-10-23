@@ -128,6 +128,14 @@ cd cpp && make test && make run
 cd python && python3 -m unittest discover -s tests -t . && python3 main.py
 ```
 
+Compilar las pruebas de C++ a mano (desde `cpp/`, equivale a `make test`):
+
+```bash
+g++ -std=c++17 -Wall -Wextra -Iinclude tests/test_adapter.cpp src/LegacyPaymentGateway.cpp -o build/test && ./build/test
+```
+
+> Si `build/` no existe, créala antes con `mkdir -p build`.
+
 ## Ejercicio: recrear el adapter desde cero (~15 min)
 
 1. Borra `cpp/include/adapter/` (o `python/adapter/`) y `tests/`.
